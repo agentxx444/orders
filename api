@@ -1,0 +1,26 @@
+import fetch from 'node-fetch';
+
+export default async function handler(req, res) {
+    const apiKey = process.env.API_KEY;  // Fetch the API key from environment variables
+
+    const url = `https://trendspherepro.com/adminapi/v2/orders?order_status=completed`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Api-Key': apiKey,  // Include the API key here
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(500).json({ error: 'Error fetching orders' });
+        }
+
+        const data = await response.json();
+        res.status(200).json(data);  // Return the fetched data
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+}
